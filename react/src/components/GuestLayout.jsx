@@ -10,7 +10,6 @@ const GuestLayout = () => {
 
     return (
         <div>
-            <h2 className="text-2xl">GuestLayout</h2>
             <Outlet />
         </div>
     );
