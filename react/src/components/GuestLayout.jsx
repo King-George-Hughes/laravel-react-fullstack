@@ -9,7 +9,7 @@ const GuestLayout = () => {
     }
 
     return (
-        <div>
+        <div className="w-full h-screen flex items-center justify-center">
             <Outlet />
         </div>
     );
