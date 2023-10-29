@@ -1,53 +1,58 @@
-import { Link, Navigate, Outlet } from "react-router-dom";
-import useStateContext from "../contexts/ContextProvider";
+import {Link, Navigate, Outlet} from "react-router-dom";
+import {useStateContext} from "../context/ContextProvider";
+import axiosClient from "../axios-client.js";
+import {useEffect} from "react";
 
-const DefaultLayout = () => {
-    const { user, token } = useStateContext();
+export default function DefaultLayout() {
+  const {user, token, setUser, setToken, notification} = useStateContext();
 
-    if (!token) {
-        return <Navigate to={"/login"} />;
-    }
+  if (!token) {
+    return <Navigate to="/login"/>
+  }
 
-    const onLogout = (event) => {
-        event.preventDefault();
-    };
+  const onLogout = ev => {
+    ev.preventDefault()
 
-    return (
-        <div className="w-full h-full flex relative">
-            <aside className="w-[200px] h-screen bg-purple-800 flex flex-col gap-2 pt-5 px-2 items-start text-gray-50">
-                <Link
-                    to={"/dashboard"}
-                    className="hover:bg-purple-900 w-full p-2 rounded-md"
-                >
-                    Dashboard
-                </Link>
-                <Link
-                    to={"/users"}
-                    className="hover:bg-purple-900 w-full p-2 rounded-md"
-                >
-                    Users
-                </Link>
-            </aside>
-            <div className="relative w-full">
-                <header className="bg-gray-50 w-full h-[60px] flex items-center justify-between px-5">
-                    <div>Header</div>
-                    <div>
-                        {user.name}
-                        <a
-                            href="#"
-                            onClick={onLogout}
-                            className="ml-2 text-red-700 font-medium"
-                        >
-                            Logout
-                        </a>
-                    </div>
-                </header>
-                <main className="mt-5 p-5">
-                    <Outlet />
-                </main>
-            </div>
-        </div>
-    );
-};
+    axiosClient.post('/logout')
+      .then(() => {
+        setUser({})
+        setToken(null)
+      })
+  }
 
-export default DefaultLayout;
+  useEffect(() => {
+    axiosClient.get('/user')
+      .then(({data}) => {
+         setUser(data)
+      })
+  }, [])
+
+  return (
+    <div id="defaultLayout">
+      <aside>
+        <Link to="/dashboard">Dashboard</Link>
+        <Link to="/users">Users</Link>
+      </aside>
+      <div className="content">
+        <header>
+          <div>
+            Header
+          </div>
+
+          <div>
+            {user.name} &nbsp; &nbsp;
+            <a onClick={onLogout} className="btn-logout" href="#">Logout</a>
+          </div>
+        </header>
+        <main>
+          <Outlet/>
+        </main>
+        {notification &&
+          <div className="notification">
+            {notification}
+          </div>
+        }
+      </div>
+    </div>
+  )
+}
