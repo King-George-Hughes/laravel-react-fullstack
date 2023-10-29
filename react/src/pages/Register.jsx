@@ -1,8 +1,23 @@
+import { useRef } from "react";
 import { Link } from "react-router-dom";
 
 const Register = () => {
+    const nameRef = useRef();
+    const emailRef = useRef();
+    const passwordRef = useRef();
+    const passwordComfirmationRef = useRef();
+
     const onSubmit = (event) => {
         event.preventDefault();
+
+        const payload = {
+            name: nameRef.current.value,
+            email: emailRef.current.value,
+            password: passwordRef.current.value,
+            password_comfirmation: passwordComfirmationRef.current.value,
+        };
+
+        console.log(payload);
     };
 
     return (
@@ -14,21 +29,25 @@ const Register = () => {
                 Create an account
             </h2>
             <input
+                ref={nameRef}
                 type="text"
                 placeholder="Name"
                 className="w-80 h-12 border-2 px-3"
             />
             <input
+                ref={emailRef}
                 type="email"
                 placeholder="Email"
                 className="w-80 h-12 border-2 px-3"
             />
             <input
+                ref={passwordRef}
                 type="password"
                 placeholder="Password"
                 className="w-80 h-12 border-2 px-3"
             />
             <input
+                ref={passwordComfirmationRef}
                 type="password"
                 placeholder="Comfirm Password"
                 className="w-80 h-12 border-2 px-3"
